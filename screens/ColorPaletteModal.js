@@ -167,24 +167,28 @@ const ColorPaletteModal = ({ navigation }) => {
   const handleSubmit = useCallback(() => {
     if (!name) {
       Alert.alert("Please enter a palette name");
+    } else if (selectedColors.length < 3) {
+      Alert.alert("Please add at least 3 colors");
     } else {
       const newColorPalette = {
         paletteName: name,
-        colors: []
+        colors: selectedColors
       };
       navigation.navigate("Home", { newColorPalette });
     }
-  }, [name]);
+  }, [name,selectedColors]);
 
   const handleValueChange = useCallback((value, color) => {
-    if (value == true) {
+    if (value === true) {
       setSelectedColors(colors => [...colors, color]);
     } else {
       setSelectedColors(colors =>
-        colors.filter(selectedColor => color.colorName !== selectedColor.colorName)
+        colors.filter(
+          selectedColor => color.colorName !== selectedColor.colorName
+        )
       );
     }
-  }, [selectedColors]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -205,10 +209,12 @@ const ColorPaletteModal = ({ navigation }) => {
               <Switch
                 value={
                   !!selectedColors.find(
-                    color => color.colorName !== item.colorName
+                    color => color.colorName === item.colorName
                   )
                 }
-                onValueChange={(selected) => {handleValueChange(selected, item)}}
+                onValueChange={selected => {
+                  handleValueChange(selected, item);
+                }}
               />
             </View>
           );
